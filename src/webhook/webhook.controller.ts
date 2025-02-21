@@ -5,7 +5,7 @@ import { RateLimiterService } from './rate-limiter.service';
 
 @Controller('webhook')
 export class WebhookController {
-  private readonly SECRET_TOKEN = process.env.WEBHOOK_SECRET_TOKEN;
+  private readonly SECRET_TOKEN = process.env.WEBHOOK_SECRET_TOKEN || 'default-secret-token';
 
   constructor(
     private readonly webhookService: WebhookService,
@@ -27,20 +27,15 @@ export class WebhookController {
       throw new BadRequestException('Invalid payload');
     }
 
-    // Rate limiting (5 requests per minute per phone number)
-    const allowed = await this.rateLimiterService.checkRateLimit(phone);
-    if (!allowed) {
-      throw new BadRequestException('Rate limit exceeded');
-    }
+    // Rate limiting 
+    this.rateLimiterService.validateRateLimit(phone);
 
     // Store message in Firestore
-    await this.webhookService.storeMessage(phone, message);
+    const timestamp = Date.now();
+    const reply = this.webhookService.generateAutoReply(message);
 
-    // Auto-reply logic
-    if (message.toLowerCase().includes('help')) {
-      return { reply: 'Support contact: support@company.com' };
-    }
+    await this.webhookService.storeMessage({ phone, message, timestamp, reply });
 
-    return { success: true };
+    return reply ? { reply } : { success: true };
   }
 }

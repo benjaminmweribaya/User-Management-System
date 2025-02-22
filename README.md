@@ -1,99 +1,134 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# User Management System with Webhook Integration
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
+This project is a **User Management System** with a **WhatsApp-like Webhook Integration**, built using **NestJS, Firestore, and TypeScript**. It follows best practices for modularity, clean code, and efficient algorithms while ensuring robust API security and scalability.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
+- **User Management:** CRUD operations for users with REST and GraphQL APIs.
+- **Webhook Integration:** Securely processes incoming messages and replies automatically.
+- **Firestore Database:** Utilizes Firebase Firestore for real-time data storage and retrieval.
+- **Rate Limiting:** Restricts excessive webhook requests per phone number.
+- **Real-time Updates:** Uses Firestore onSnapshot() for automatic updates.
+- **Input Validation & Error Handling:** Ensures data integrity and security.
+- **Testing:** Unit and end-to-end tests for critical functionalities.
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+## Project Structure
+```
+.
+├── LICENSE
+├── README.md
+└── backend
+    ├── eslint.config.mjs
+    ├── nest-cli.json
+    ├── package-lock.json
+    ├── package.json
+    ├── src
+    │   ├── app.controller.ts
+    │   ├── app.module.ts
+    │   ├── app.service.ts
+    │   ├── main.ts
+    │   ├── firestore
+    │   │   └── firestore.module.ts
+    │   ├── users
+    │   │   ├── dto
+    │   │   │   ├── create-user.dto.ts
+    │   │   │   └── update-user.dto.ts
+    │   │   ├── entities
+    │   │   │   └── user.entity.ts
+    │   │   ├── users.controller.ts
+    │   │   ├── users.module.ts
+    │   │   ├── users.resolver.ts
+    │   │   └── users.service.ts
+    │   ├── webhook
+    │   │   ├── dto
+    │   │   │   └── webhook-message.dto.ts
+    │   │   ├── entities
+    │   │   │   └── message.entity.ts
+    │   │   ├── rate-limiter.service.ts
+    │   │   ├── webhook.controller.ts
+    │   │   ├── webhook.module.ts
+    │   │   └── webhook.service.ts
+    ├── test
+    │   ├── app.e2e-spec.ts
+    │   ├── jest-e2e.json
+    │   └── webhook.e2e-spec.ts
+    ├── tsconfig.build.json
+    └── tsconfig.json
 ```
 
-## Compile and run the project
+## Installation & Setup
+### Prerequisites
+Ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (>= 16.x)
+- [Firebase CLI](https://firebase.google.com/docs/cli)
+- [NestJS CLI](https://docs.nestjs.com/)
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+### Clone the Repository
+```sh
+git clone https://github.com/benjaminmweribaya/user-management-system.git
+cd user-management-system/backend
 ```
 
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+### Install Dependencies
+```sh
+npm install
 ```
 
-## Deployment
+### Set Up Firebase Firestore
+1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com/).
+2. Enable Firestore in "Native Mode".
+3. Generate a Firebase service account key (`firebase-adminsdk.json`).
+4. Place it in the root directory of the backend.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
+### Configure Environment Variables
+Create a `.env` file in the `backend` directory:
+```
+FIREBASE_CREDENTIALS=./firebase-adminsdk.json
+SECRET_TOKEN=your-secure-token
+PORT=3000
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Run the Application
+```sh
+npm run start
+```
 
-## Resources
+The backend will be available at `http://localhost:3000/`.
 
-Check out a few resources that may come in handy when working with NestJS:
+## API Endpoints
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### User Management (REST API)
+- **POST /users** - Create a user
+- **GET /users** - Fetch users with pagination
+- **GET /users/{id}** - Fetch a single user
+- **PATCH /users/{id}** - Update user details (email immutable)
 
-## Support
+### User Management (GraphQL API)
+- **Query:** `users { id, name, email, phone }`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Webhook Integration
+- **POST /webhook** - Process incoming messages
+  - `{ "message": "Hello", "phone": "+1234567890" }`
+  - If message contains "help", replies: `{ "reply": "Support contact: support@company.com" }`
 
-## Stay in touch
+## Testing
+Run unit and end-to-end tests:
+```sh
+npm run test
+npm run test:e2e
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Design Considerations
+- **Modular NestJS Architecture** - Ensures maintainability and scalability.
+- **Firestore Cursors for Pagination** - Efficiently handles large datasets.
+- **Rate Limiting for Webhooks** - Prevents spam and abuse.
+- **Global Exception Handling** - Improves error reporting.
 
 ## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Author
+- **Name:**-Benjamin Mweri Baya
+- **Email:**-benjaminbaya@example.com
+
+---

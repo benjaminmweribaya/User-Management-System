@@ -38,7 +38,7 @@ export class UsersService {
     const userDoc = await userRef.get();
     if (!userDoc.exists) return null;
     
-    const updateData = Object.assign({}, updateUserDto);
+    const updateData = JSON.parse(JSON.stringify(updateUserDto));
     await userRef.update(updateData);
 
     return { id, ...updateData };

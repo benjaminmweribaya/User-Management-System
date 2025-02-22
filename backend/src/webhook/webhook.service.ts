@@ -12,12 +12,12 @@ export class WebhookService implements OnModuleInit{
     this.messagesCollection = this.firestore.collection('messages');
   }
 
-  async storeMessage(phone: string, message: string): Promise<void> {
-    await this.messagesCollection.add({ phone, message, timestamp: new Date() });
+  async storeMessage({ phone, message, timestamp, reply }: { phone: string; message: string; timestamp: number; reply?: string }): Promise<void> {
+    await this.messagesCollection.add({ phone, message, timestamp, reply });
   }
 
-  generateAutoReply(message: string): string | null {
-    return message.toLowerCase().includes('help') ? 'Support contact: support@company.com' : null;
+  generateAutoReply(message: string): string | undefined {
+    return message.toLowerCase().includes('help') ? 'Support contact: support@company.com' : undefined;
   }
 
   onModuleInit() {

@@ -128,7 +128,7 @@ npm run test:e2e
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Author
-- **Name:**-Benjamin Mweri Baya
-- **Email:**-benjaminbaya@example.com
+- **Name:** - Benjamin Mweri Baya
+- **Email:** - b3njaminbaya@gmail.com
 
 ---

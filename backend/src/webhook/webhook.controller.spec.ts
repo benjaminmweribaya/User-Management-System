@@ -2,12 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { WebhookController } from './webhook.controller';
 import { WebhookService } from './webhook.service';
 import { RateLimiterService } from './rate-limiter.service';
-import { ForbiddenException, BadRequestException } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 
 describe('WebhookController', () => {
   let controller: WebhookController;
   let webhookService: WebhookService;
   let rateLimiterService: RateLimiterService;
+
+  const SECRET_TOKEN = process.env.SECRET_TOKEN || 'VALID_TOKEN';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,16 +32,24 @@ describe('WebhookController', () => {
   });
 
   it('should reject requests that exceed rate limit', async () => {
-    jest.spyOn(rateLimiterService, 'validateRateLimit').mockResolvedValue(false);
+    jest.spyOn(rateLimiterService, 'validateRateLimit').mockImplementation(() => {
+      throw new ForbiddenException('Rate limit exceeded.');
+    });
     await expect(
-      controller.handleWebhook({ message: 'Hello', phone: '+1234567890' }, 'Bearer VALID_TOKEN')
-    ).rejects.toThrow(BadRequestException);
+      controller.handleWebhook({ message: 'Hello', phone: '+1234567890' }, `Bearer ${SECRET_TOKEN}`)
+    ).rejects.toThrow(ForbiddenException);    
   });
 
   it('should store the message and return an auto-reply if applicable', async () => {
+
+    jest.spyOn(rateLimiterService, 'validateRateLimit').mockImplementation(() => {});
+
     jest.spyOn(webhookService, 'generateAutoReply').mockReturnValue('Support contact: support@company.com');
 
-    const response = await controller.handleWebhook({ message: 'help', phone: '+1234567890' }, 'Bearer VALID_TOKEN');
+    const response = await controller.handleWebhook(
+      { message: 'help', phone: '+1234567890' }, 
+      `Bearer ${SECRET_TOKEN}`
+    );
 
     expect(webhookService.storeMessage).toHaveBeenCalledWith('+1234567890', 'help');
     expect(response).toEqual({ reply: 'Support contact: support@company.com' });
